@@ -1,10 +1,11 @@
 ---
+import { url } from '../lib/url';
 // Glass booking bar. Submits to /booking/ (GET) with the values prefilled.
 ---
 
 <form
   id="booking-bar"
-  action="/booking/"
+  action={url("/booking/")}
   method="get"
   class="w-full bg-dark px-5 py-6 text-white lg:bg-white/15 lg:py-0 lg:backdrop-blur-md"
   aria-label="Check availability"

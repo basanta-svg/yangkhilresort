@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import logo from '../assets/brand/logo-white.png';
 import Icon from './Icon.astro';
@@ -17,7 +18,7 @@ const socials = [
       <p>{site.name}<br />Trongsa, Bhutan<br />A short walk from Trongsa town</p>
     </div>
     <div class="flex flex-col items-center">
-      <a href="/" aria-label="Yangkhil Resort, home">
+      <a href={url("/")} aria-label="Yangkhil Resort, home">
         <Image src={logo} alt="Yangkhil Resort" width={220} class="h-auto w-[200px]" />
       </a>
       <div class="mt-6 flex gap-5">

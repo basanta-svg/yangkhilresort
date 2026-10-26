@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import SectionHeading from './SectionHeading.astro';
@@ -21,7 +22,7 @@ const rooms = order.map((s) => allRooms.find((r) => r.slug === s)!);
         {
           rooms.map((r) => (
             <div class="swiper-slide">
-              <a href={`/booking/?room=${r.slug}`} class="group relative block aspect-[4/5] overflow-hidden bg-dark">
+              <a href={url(`/booking/?room=${r.slug}`)} class="group relative block aspect-[4/5] overflow-hidden bg-dark">
                 <Image
                   src={photos[r.photo]}
                   alt={alt[r.photo]}

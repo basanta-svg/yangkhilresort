@@ -1,3 +1,4 @@
+import { url } from '../lib/url';
 /** Central, editable site settings. */
 export const site = {
   name: 'Yangkhil Resort',
@@ -21,10 +22,10 @@ export const site = {
     google: '',
   },
   nav: [
-    { label: 'About Us', href: '/about/' },
-    { label: 'Rooms', href: '/rooms/' },
-    { label: 'Amenities & Experiences', href: '/amenities/' },
-    { label: 'Explore Trongsa', href: '/explore-trongsa/' },
+    { label: 'About Us', href: url('/about/') },
+    { label: 'Rooms', href: url('/rooms/') },
+    { label: 'Amenities & Experiences', href: url('/amenities/') },
+    { label: 'Explore Trongsa', href: url('/explore-trongsa/') },
   ],
   quickLinks: [
     { label: 'Department of Tourism', href: 'https://bhutan.travel/' },

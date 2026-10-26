@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import BookingBar from './BookingBar.astro';
 import { photos, alt } from '../data/photos';
@@ -34,8 +35,8 @@ const slides = ['hero-1', 'hero-2', 'hero-3', 'hero-4', 'hero-5', 'hero-6'];
     <div class="fade-up mx-auto max-w-[940px]">
       <h1 class="font-heading text-balance text-[24px] font-light leading-snug !text-white md:text-[32px]">{site.tagline}</h1>
       <div class="mt-7 flex flex-wrap justify-center gap-3">
-        <a href="/booking/" class="btn !px-5 !py-2.5 !text-[11px]">Book Your Stay</a>
-        <a href="/about/" class="btn-outline !px-5 !py-2.5 !text-[11px]">Explore the Resort</a>
+        <a href={url("/booking/")} class="btn !px-5 !py-2.5 !text-[11px]">Book Your Stay</a>
+        <a href={url("/about/")} class="btn-outline !px-5 !py-2.5 !text-[11px]">Explore the Resort</a>
       </div>
     </div>
   </div>

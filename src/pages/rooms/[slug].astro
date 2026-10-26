@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import BookCta from '../../components/BookCta.astro';
@@ -30,8 +31,8 @@ const features = [
       </p>
       <p class="mt-8 text-[18px]">{r.blurb}</p>
       <div class="mt-10 flex flex-wrap justify-center gap-3">
-        <a href={`/booking/?room=${r.slug}`} class="btn">Enquire About This Room</a>
-        <a href="/rooms/" class="btn-outline-dark">← All Rooms</a>
+        <a href={url(`/booking/?room=${r.slug}`)} class="btn">Enquire About This Room</a>
+        <a href={url("/rooms/")} class="btn-outline-dark">← All Rooms</a>
       </div>
     </div>
   </section>
@@ -56,7 +57,7 @@ const features = [
   </section>
 
   <section class="grid gap-1 md:grid-cols-3">
-    {others.map((o) => <ImageTile href={`/rooms/${o.slug}/`} photo={o.photo} title={o.name} ratio="aspect-[4/3]" cta="View room" />)}
+    {others.map((o) => <ImageTile href={url(`/rooms/${o.slug}/`)} photo={o.photo} title={o.name} ratio="aspect-[4/3]" cta="View room" />)}
   </section>
 
   <BookCta />

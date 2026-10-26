@@ -1,4 +1,5 @@
 ---
+import { url } from '../../lib/url';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import BookCta from '../../components/BookCta.astro';
@@ -26,15 +27,15 @@ const everyRoom = [
   {
     rooms.map((r, i) => (
       <SplitFeature id={r.slug} photo={r.photo} flip={i % 2 === 1} tone={i % 2 === 0 ? 'light' : 'white'}>
-        <h2 class="text-[34px] md:text-[44px]"><a href={`/rooms/${r.slug}/`}>{r.name}</a></h2>
+        <h2 class="text-[34px] md:text-[44px]"><a href={url(`/rooms/${r.slug}/`)}>{r.name}</a></h2>
         <p class="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-[15px] text-muted">
           <span class="flex items-center gap-2"><Icon name="users" size={16} class="text-primary" />{r.guests}</span>
           <span class="flex items-center gap-2"><Icon name="bed" size={16} class="text-primary" />{r.beds}</span>
         </p>
         <p class="mt-5 text-[17px]">{r.blurb}</p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href={`/rooms/${r.slug}/`} class="btn">View Room</a>
-          <a href={`/booking/?room=${r.slug}`} class="btn-outline-dark">Enquire</a>
+          <a href={url(`/rooms/${r.slug}/`)} class="btn">View Room</a>
+          <a href={url(`/booking/?room=${r.slug}`)} class="btn-outline-dark">Enquire</a>
         </div>
       </SplitFeature>
     ))

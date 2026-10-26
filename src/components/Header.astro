@@ -1,4 +1,5 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import logo from '../assets/brand/logo.png';
 import logoWhite from '../assets/brand/logo-white.png';
@@ -19,7 +20,7 @@ const socials = [
   class="fixed inset-x-0 top-0 z-50 border-b border-dark/10 bg-light shadow-[0_4px_20px_rgb(0_0_0/0.08)]"
 >
   <div class="mx-auto flex max-w-[1370px] items-center justify-between px-5 py-2 md:px-12">
-    <a href="/" class="block shrink-0" aria-label="Yangkhil Resort, home">
+    <a href={url("/")} class="block shrink-0" aria-label="Yangkhil Resort, home">
       <Image src={logo} alt="Yangkhil Resort" width={180} class="h-auto w-[125px] md:w-[170px]" loading="eager" />
     </a>
 
@@ -38,7 +39,7 @@ const socials = [
     </nav>
 
     <div class="flex items-center gap-4">
-      <a href="/booking/" class="btn hidden !px-5 !py-2.5 lg:inline-flex">Book Now</a>
+      <a href={url("/booking/")} class="btn hidden !px-5 !py-2.5 lg:inline-flex">Book Now</a>
       <!-- Hamburger: small screens only, where the links don't fit -->
       <button
         id="menu-open"
@@ -75,7 +76,7 @@ const socials = [
       ))
     }
   </nav>
-  <a href="/booking/" class="btn mt-8">Book Now</a>
+  <a href={url("/booking/")} class="btn mt-8">Book Now</a>
   <div class="mt-auto space-y-3 pt-8 text-[15px] text-white/80">
     <a href={`tel:${site.phones[1].replace(/[^+\d]/g, '')}`} class="flex items-center gap-3"><Icon name="phone" size={16} class="text-primary" />{site.phones[0]}</a>
     <a href={`mailto:${site.email}`} class="flex items-center gap-3 break-all"><Icon name="mail" size={16} class="text-primary" />{site.email}</a>

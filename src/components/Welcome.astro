@@ -1,12 +1,13 @@
 ---
+import { url } from '../lib/url';
 import { Image } from 'astro:assets';
 import ImageTile from './ImageTile.astro';
 import { photos, alt } from '../data/photos';
 
 const cards = [
-  { title: 'Stay', text: '21 rooms across five two-storey cottages, each with a balcony and valley views.', photo: 'cottage-outdoor', href: '/rooms/' },
-  { title: 'Dine', text: 'Bhutanese and Indian dishes, fresh espresso, pastries and handcrafted cocktails.', photo: 'outdoor', href: '/amenities/#restaurant' },
-  { title: 'Unwind', text: 'A traditional hot stone bath and spa treatments after a day on the road.', photo: 'img-4244', href: '/amenities/#hot-stone-bath' },
+  { title: 'Stay', text: '21 rooms across five two-storey cottages, each with a balcony and valley views.', photo: 'cottage-outdoor', href: url('/rooms/') },
+  { title: 'Dine', text: 'Bhutanese and Indian dishes, fresh espresso, pastries and handcrafted cocktails.', photo: 'outdoor', href: url('/amenities/#restaurant') },
+  { title: 'Unwind', text: 'A traditional hot stone bath and spa treatments after a day on the road.', photo: 'img-4244', href: url('/amenities/#hot-stone-bath') },
 ];
 ---
 
@@ -25,7 +26,7 @@ const cards = [
           Set against panoramic views of Trongsa Dzong, Taa Dzong and the Mangde Chhu valley, Yangkhil offers a peaceful
           retreat in the heart of Bhutan.
         </p>
-        <a href="/about/" class="btn mt-9">Learn More</a>
+        <a href={url("/about/")} class="btn mt-9">Learn More</a>
       </div>
     </div>
   </div>
