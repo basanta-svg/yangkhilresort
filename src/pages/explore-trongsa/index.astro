@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import BookCta from '../../components/BookCta.astro';
+import ImageTile from '../../components/ImageTile.astro';
+import { attractions } from '../../data/trongsa';
+---
+
+<BaseLayout title="Explore Trongsa" description="Trongsa Dzong, Ta Dzong, the Mangde Chhu valley and more: what to see around Yangkhil Resort in Trongsa, Bhutan.">
+  <PageHero title="Explore Trongsa" subtitle="Dzongs, valleys and village life around the resort." photo="dzong-view" />
+
+  <section class="grid gap-1 md:grid-cols-2">
+    {
+      attractions.map((a) => (
+        <ImageTile href={`/explore-trongsa/${a.slug}/`} photo={a.photo} title={a.title} text={a.summary} ratio="aspect-[4/3]" cta="Read more" />
+      ))
+    }
+  </section>
+
+  <BookCta />
+</BaseLayout>

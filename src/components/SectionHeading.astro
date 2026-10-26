@@ -1,0 +1,17 @@
+---
+interface Props {
+  title: string;
+  intro?: string;
+  light?: boolean;
+}
+const { title, intro, light = false } = Astro.props;
+---
+
+<div class="reveal mx-auto mb-12 max-w-[720px] text-center md:mb-16">
+  <h2 class:list={['h-section', light && '!text-white']}>{title}</h2>
+  {
+    intro && (
+      <p class:list={['mt-5 text-[17px] font-light md:text-[18px]', light && '!text-white/80']}>{intro}</p>
+    )
+  }
+</div>

@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import BookCta from '../../components/BookCta.astro';
+import ImageTile from '../../components/ImageTile.astro';
+import Icon from '../../components/Icon.astro';
+import { rooms } from '../../data/rooms';
+
+export function getStaticPaths() {
+  return rooms.map((r) => ({ params: { slug: r.slug }, props: { r } }));
+}
+const { r } = Astro.props;
+const others = rooms.filter((o) => o.slug !== r.slug);
+
+const features = [
+  { icon: 'mountain', title: 'Balcony with a view', text: 'Overlooking the river valley.' },
+  { icon: 'sparkles', title: 'All modern amenities', text: 'Everything you need for a restful stay.' },
+  { icon: 'check', title: 'Gardens and fish ponds', text: 'Surrounding the cottages.' },
+];
+---
+
+<BaseLayout title={r.name} description={`${r.name} at Yangkhil Resort, Trongsa. ${r.blurb}`} ogPhoto={r.photo}>
+  <PageHero title={r.name} subtitle={r.blurb} photo={r.photo} />
+
+  <section class="section">
+    <div class="container-x mx-auto max-w-[780px] text-center">
+      <p class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-[16px] text-muted">
+        <span class="flex items-center gap-2"><Icon name="users" size={18} class="text-primary" />{r.guests}</span>
+        <span class="flex items-center gap-2"><Icon name="bed" size={18} class="text-primary" />{r.beds}</span>
+      </p>
+      <p class="mt-8 text-[18px]">{r.blurb}</p>
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <a href={`/booking/?room=${r.slug}`} class="btn">Enquire About This Room</a>
+        <a href="/rooms/" class="btn-outline-dark">← All Rooms</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-dark py-16 md:py-20">
+    <div class="container-x">
+      <h2 class="h-section reveal mb-12 text-center !text-white">In This Room</h2>
+      <div class="grid gap-10 md:grid-cols-3">
+        {
+          features.map((a) => (
+            <div class="reveal text-center text-white/85">
+              <span class="mx-auto mb-4 flex h-[55px] w-[50px] items-center justify-center rounded-t-full bg-primary text-white">
+                <Icon name={a.icon} size={24} />
+              </span>
+              <h3 class="text-[22px] !text-white">{a.title}</h3>
+              <p class="mx-auto mt-2 max-w-[300px] text-[15px]">{a.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-1 md:grid-cols-3">
+    {others.map((o) => <ImageTile href={`/rooms/${o.slug}/`} photo={o.photo} title={o.name} ratio="aspect-[4/3]" cta="View room" />)}
+  </section>
+
+  <BookCta />
+</BaseLayout>

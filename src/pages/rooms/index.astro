@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import BookCta from '../../components/BookCta.astro';
+import SplitFeature from '../../components/SplitFeature.astro';
+import Icon from '../../components/Icon.astro';
+import { rooms } from '../../data/rooms';
+
+const everyRoom = [
+  { icon: 'mountain', title: 'Balcony with a view', text: 'Every room has a balcony overlooking the river valley.' },
+  { icon: 'sparkles', title: 'All modern amenities', text: 'Comfortable rooms with everything you need for a restful stay.' },
+  { icon: 'check', title: 'Gardens and fish ponds', text: 'Lush, colourful gardens and fish ponds surround the cottages.' },
+];
+---
+
+<BaseLayout title="Rooms" description="21 rooms across five cottages at Yangkhil Resort, Trongsa: Premium Single, Premium Twin, Deluxe Single and Deluxe Double.">
+  <PageHero title="Rooms" subtitle="Twenty-one rooms across five cottages overlooking the beautiful landscapes of Trongsa." photo="room-1" />
+
+  <section class="bg-white px-5 py-16 text-center md:py-24">
+    <p class="reveal mx-auto max-w-[720px] text-[18px] font-light">
+      Enjoy a comfortable stay at Yangkhil Resort. Choose from our selection of single, twin and double rooms, designed to
+      offer a welcoming place to rest after a day of exploring Bhutan.
+    </p>
+  </section>
+
+  {
+    rooms.map((r, i) => (
+      <SplitFeature id={r.slug} photo={r.photo} flip={i % 2 === 1} tone={i % 2 === 0 ? 'light' : 'white'}>
+        <h2 class="text-[34px] md:text-[44px]"><a href={`/rooms/${r.slug}/`}>{r.name}</a></h2>
+        <p class="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-[15px] text-muted">
+          <span class="flex items-center gap-2"><Icon name="users" size={16} class="text-primary" />{r.guests}</span>
+          <span class="flex items-center gap-2"><Icon name="bed" size={16} class="text-primary" />{r.beds}</span>
+        </p>
+        <p class="mt-5 text-[17px]">{r.blurb}</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={`/rooms/${r.slug}/`} class="btn">View Room</a>
+          <a href={`/booking/?room=${r.slug}`} class="btn-outline-dark">Enquire</a>
+        </div>
+      </SplitFeature>
+    ))
+  }
+
+  <!-- "Add amenities, refer old website": the current yangkhil.com lists these for every room. -->
+  <section class="bg-dark py-16 md:py-24">
+    <div class="container-x">
+      <h2 class="h-section reveal mb-12 text-center !text-white">In Every Room</h2>
+      <div class="grid gap-10 md:grid-cols-3">
+        {
+          everyRoom.map((a) => (
+            <div class="reveal text-center text-white/85">
+              <span class="mx-auto mb-4 flex h-[55px] w-[50px] items-center justify-center rounded-t-full bg-primary text-white">
+                <Icon name={a.icon} size={24} />
+              </span>
+              <h3 class="text-[22px] !text-white">{a.title}</h3>
+              <p class="mx-auto mt-2 max-w-[300px] text-[15px]">{a.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <BookCta />
+</BaseLayout>

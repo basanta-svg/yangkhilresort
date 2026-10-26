@@ -1,0 +1,149 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BackToTop from '../components/BackToTop.astro';
+import { site } from '../data/site';
+import { photos } from '../data/photos';
+import { getImage } from 'astro:assets';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogPhoto?: string;
+}
+const { title, description = site.description, ogPhoto = 'cottages' } = Astro.props;
+const fullTitle = title ? `${title} | ${site.name}, Trongsa, Bhutan` : `${site.name} | Boutique Resort in Trongsa, Bhutan`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const og = await getImage({ src: photos[ogPhoto], width: 1200, height: 630, format: 'jpg', fit: 'cover' });
+const ogUrl = new URL(og.src, Astro.site).href;
+
+const sameAs = Object.values(site.social).filter(Boolean);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Hotel',
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  image: ogUrl,
+  telephone: site.phones[1],
+  email: site.email,
+  foundingDate: String(site.since),
+  numberOfRooms: 21,
+  address: { '@type': 'PostalAddress', addressLocality: 'Trongsa', addressCountry: 'BT' },
+  sameAs,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#304058" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-white focus:px-4 focus:py-2">Skip to content</a>
+    <Header />
+    <main id="main" style="padding-top: var(--header-h)">
+      <slot />
+    </main>
+    <Footer />
+    <BackToTop />
+
+    <script>
+      import Lenis from 'lenis';
+      import 'lenis/dist/lenis.css';
+
+      // Smooth, slightly delayed scrolling (skipped for people who prefer reduced motion).
+      let lenis: Lenis | undefined;
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        lenis = new Lenis({
+          duration: 1.3,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          anchors: { offset: -80 }, // in-page links stop below the fixed header
+        });
+        const raf = (time: number) => {
+          lenis!.raf(time);
+          requestAnimationFrame(raf);
+        };
+        requestAnimationFrame(raf);
+      }
+
+      const header = document.getElementById('site-header')!;
+      // Keep the page offset equal to the real header height (the CSS value is only the first guess).
+      const syncHeader = () => document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+      syncHeader();
+      new ResizeObserver(syncHeader).observe(header);
+      const onScroll = () => {
+        header.dataset.scrolled = String(window.scrollY > 80);
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // Mobile drawer
+      const drawer = document.getElementById('mobile-drawer')!;
+      const backdrop = document.getElementById('drawer-backdrop')!;
+      const openBtn = document.getElementById('menu-open')!;
+      const setDrawer = (open: boolean) => {
+        drawer.classList.toggle('translate-x-full', !open);
+        backdrop.classList.toggle('invisible', !open);
+        backdrop.classList.toggle('opacity-0', !open);
+        drawer.toggleAttribute('inert', !open);
+        drawer.setAttribute('aria-hidden', String(!open));
+        openBtn.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+        if (open) lenis?.stop();
+        else lenis?.start();
+        if (open) document.getElementById('menu-close')!.focus();
+        else openBtn.focus();
+      };
+      openBtn.addEventListener('click', () => setDrawer(true));
+      document.getElementById('menu-close')!.addEventListener('click', () => setDrawer(false));
+      backdrop.addEventListener('click', () => setDrawer(false));
+      drawer.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setDrawer(false)));
+      document.addEventListener('keydown', (e) => e.key === 'Escape' && setDrawer(false));
+
+      // Scroll reveal
+      const els = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((en) => {
+              if (en.isIntersecting) {
+                en.target.classList.add('is-in');
+                io.unobserve(en.target);
+              }
+            }),
+          { threshold: 0.12 },
+        );
+        els.forEach((el) => io.observe(el));
+      } else els.forEach((el) => el.classList.add('is-in'));
+
+      // Back to top
+      const top = document.getElementById('back-to-top')!;
+      const toggleTop = () => {
+        const show = window.scrollY > 400;
+        top.classList.toggle('opacity-0', !show);
+        top.classList.toggle('pointer-events-none', !show);
+      };
+      toggleTop();
+      window.addEventListener('scroll', toggleTop, { passive: true });
+      top.addEventListener('click', () => (lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0 })));
+    </script>
+  </body>
+</html>

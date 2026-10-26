@@ -1,0 +1,19 @@
+---
+import { Image } from 'astro:assets';
+import { photos, focus } from '../data/photos';
+interface Props {
+  title: string;
+  subtitle?: string;
+  photo: string;
+}
+const { title, subtitle, photo } = Astro.props;
+---
+
+<section class="relative flex min-h-[420px] items-end justify-center overflow-hidden bg-dark pb-16 pt-16 text-center md:min-h-[60svh] md:pb-20">
+  <Image src={photos[photo]} alt="" width={2000} style={`object-position:${focus[photo] ?? "center"}`} class="absolute inset-0 h-full w-full object-cover" loading="eager" />
+  <div class="absolute inset-0 bg-black/50"></div>
+  <div class="container-x relative fade-up">
+    <h1 class="h-hero">{title}</h1>
+    {subtitle && <p class="mx-auto mt-4 max-w-[640px] text-white/75">{subtitle}</p>}
+  </div>
+</section>

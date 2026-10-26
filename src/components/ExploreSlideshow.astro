@@ -1,0 +1,95 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { photos, alt, focus } from '../data/photos';
+import { attractions } from '../data/trongsa';
+---
+
+<section aria-label="Explore Trongsa">
+  <div class="container-x pt-[72px] md:pt-[110px]">
+    <SectionHeading title="Explore Trongsa" intro="Dzongs, valleys and village life, all within reach of the resort." />
+  </div>
+
+  <!-- Expanding photo panels: the active place opens wide, the rest stay as slim photo strips. -->
+  <div id="explore-panels" class="flex flex-col gap-1 md:h-[80svh] md:min-h-[560px] md:flex-row">
+    {
+      attractions.map((a, i) => (
+        <article
+          class="explore-panel group relative h-[96px] cursor-pointer overflow-hidden bg-black transition-[height,flex-grow] duration-700 ease-in-out data-[active=true]:h-[460px] md:h-auto md:data-[active=true]:h-auto md:flex-1 md:data-[active=true]:flex-[4.5]"
+          data-active={i === 0 ? 'true' : 'false'}
+          data-index={i}
+          tabindex="0"
+          aria-label={a.title}
+        >
+          <Image
+            src={photos[a.photo]}
+            alt={alt[a.photo]}
+            width={1600}
+            loading={i === 0 ? 'eager' : 'lazy'}
+            style={`object-position:${focus[a.photo] ?? "center"}`}
+            class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-data-[active=true]:scale-105"
+          />
+          <div class="absolute inset-0 bg-black/45 transition-colors duration-700 group-data-[active=true]:bg-black/20"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent opacity-0 transition-opacity duration-700 group-data-[active=true]:opacity-100"></div>
+
+          <!-- Collapsed label -->
+          <div class="absolute inset-0 flex items-center gap-4 px-6 text-white transition-opacity duration-300 group-data-[active=true]:pointer-events-none group-data-[active=true]:opacity-0 md:flex-col md:items-start md:justify-between md:px-0 md:py-8">
+            <span class="font-heading text-[18px] text-primary md:w-full md:text-center">0{i + 1}</span>
+            <span class="font-heading text-[22px] md:w-full md:text-center md:text-[24px] md:[writing-mode:vertical-rl] md:rotate-180">{a.title}</span>
+          </div>
+
+          <!-- Expanded content -->
+          <div class="absolute inset-x-0 bottom-0 p-7 text-white opacity-0 transition-opacity duration-500 group-data-[active=true]:opacity-100 group-data-[active=true]:delay-300 md:p-12">
+            <span class="font-heading text-[18px] text-primary">0{i + 1}</span>
+            <h3 class="mt-1 text-[30px] !text-white md:text-[52px]">{a.title}</h3>
+            <p class="mt-3 max-w-[560px] text-[16px] text-white/90 md:text-[17px]">{a.summary}</p>
+            <a href={`/explore-trongsa/${a.slug}/`} class="btn mt-6" tabindex={i === 0 ? 0 : -1}>
+              Read more <Icon name="arrow-right" size={14} />
+            </a>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  const wrap = document.getElementById('explore-panels')!;
+  const panels = [...wrap.querySelectorAll<HTMLElement>('.explore-panel')];
+  const hoverDevice = matchMedia('(hover: hover) and (min-width: 768px)').matches;
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let current = 0;
+  let timer: number | undefined;
+
+  const show = (i: number) => {
+    current = i;
+    panels.forEach((p, n) => {
+      p.dataset.active = String(n === i);
+      p.querySelector('a')!.tabIndex = n === i ? 0 : -1;
+    });
+  };
+  const start = () => {
+    if (calm) return;
+    stop();
+    timer = window.setInterval(() => show((current + 1) % panels.length), 6000);
+  };
+  const stop = () => window.clearInterval(timer);
+
+  panels.forEach((p, n) => {
+    if (hoverDevice) p.addEventListener('pointerenter', () => show(n));
+    p.addEventListener('click', (e) => {
+      // First tap opens the panel; a tap on its Read more link follows the link.
+      if (current !== n) {
+        e.preventDefault();
+        show(n);
+      }
+    });
+    p.addEventListener('focus', () => show(n));
+  });
+  wrap.addEventListener('pointerenter', stop);
+  wrap.addEventListener('pointerleave', start);
+  wrap.addEventListener('focusin', stop);
+  wrap.addEventListener('focusout', start);
+  start();
+</script>

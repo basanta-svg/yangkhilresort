@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { photos, alt, focus } from '../data/photos';
+interface Props {
+  href: string;
+  photo: string;
+  title: string;
+  text?: string;
+  ratio?: string;
+  cta?: string;
+}
+const { href, photo, title, text, ratio = 'aspect-[4/5]', cta = 'Discover' } = Astro.props;
+---
+
+<a href={href} class:list={['reveal group relative block overflow-hidden bg-dark', ratio]}>
+  <Image
+    src={photos[photo]}
+    alt={alt[photo]}
+    width={1000}
+    style={`object-position:${focus[photo] ?? "center"}`}
+    class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+  />
+  <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent"></div>
+  <div class="absolute inset-x-0 bottom-0 p-7 text-white md:p-10">
+    <h3 class="text-[26px] !text-white md:text-[32px]">{title}</h3>
+    {text && <p class="mt-2 max-w-[440px] text-[15px] text-white/85">{text}</p>}
+    <span class="mt-4 inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[2px] text-white">
+      {cta}
+      <Icon name="arrow-right" size={14} class="transition-transform duration-300 group-hover:translate-x-1.5" />
+    </span>
+  </div>
+</a>

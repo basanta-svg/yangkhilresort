@@ -1,0 +1,27 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { photos, alt } from '../data/photos';
+import { site } from '../data/site';
+
+// Static selection of resort photos (not a live feed).
+const tiles = ['cottages', 'img-4176', 'room-3', 'traditional-hotstone-bath', 'thori-cocktail-lounge', 'dzong-view-b', 'massage-therapy', 'outdoor'];
+---
+
+<section class="pb-0 pt-[72px] md:pt-[120px]" aria-label="Instagram">
+  <h2 class="reveal mb-10 px-5 text-center text-[34px] font-light md:mb-14 md:text-[52px]">
+    <a href={site.social.instagram} target="_blank" rel="noopener" class="transition-colors hover:text-primary">@yangkhilresort</a>
+  </h2>
+  <div class="grid grid-cols-4 lg:grid-cols-8">
+    {
+      tiles.map((t) => (
+        <a href={site.social.instagram} target="_blank" rel="noopener" class="group relative block aspect-square overflow-hidden" aria-label="View on Instagram">
+          <Image src={photos[t]} alt={alt[t]} width={400} height={400} class="h-full w-full object-cover" />
+          <span class="absolute inset-0 flex items-center justify-center bg-black/60 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+            <Icon name="instagram" size={28} />
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</section>

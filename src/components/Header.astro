@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo.png';
+import logoWhite from '../assets/brand/logo-white.png';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const path = Astro.url.pathname;
+const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const socials = [
+  { name: 'instagram', href: site.social.instagram, label: 'Instagram' },
+  { name: 'facebook', href: site.social.facebook, label: 'Facebook' },
+  { name: 'tripadvisor', href: site.social.tripadvisor, label: 'Tripadvisor' },
+].filter((s) => s.href);
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 border-b border-dark/10 bg-light shadow-[0_4px_20px_rgb(0_0_0/0.08)]"
+>
+  <div class="mx-auto flex max-w-[1370px] items-center justify-between px-5 py-2 md:px-12">
+    <a href="/" class="block shrink-0" aria-label="Yangkhil Resort, home">
+      <Image src={logo} alt="Yangkhil Resort" width={180} class="h-auto w-[125px] md:w-[170px]" loading="eager" />
+    </a>
+
+    <nav class="ml-auto mr-10 hidden items-center gap-10 lg:flex" aria-label="Primary">
+      {
+        site.nav.map((l) => (
+          <a
+            href={l.href}
+            aria-current={active(l.href) ? 'page' : undefined}
+            class="text-[15px] font-medium text-dark transition-colors duration-300 hover:text-primary aria-[current=page]:text-primary"
+          >
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-4">
+      <a href="/booking/" class="btn hidden !px-5 !py-2.5 lg:inline-flex">Book Now</a>
+      <!-- Hamburger: small screens only, where the links don't fit -->
+      <button
+        id="menu-open"
+        class="text-dark transition-colors duration-300 hover:text-primary lg:hidden"
+        aria-label="Open menu"
+        aria-controls="mobile-drawer"
+        aria-expanded="false"
+      >
+        <Icon name="menu" size={28} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile drawer -->
+<div id="drawer-backdrop" class="invisible fixed inset-0 z-[60] bg-black/50 opacity-0 transition-opacity duration-300"></div>
+<aside
+  id="mobile-drawer"
+  class="fixed inset-y-0 right-0 z-[70] flex w-[86%] max-w-[380px] translate-x-full flex-col bg-dark px-7 py-6 text-white transition-transform duration-300"
+  aria-label="Menu"
+  aria-hidden="true"
+  inert
+>
+  <div class="flex items-center justify-between">
+    <Image src={logoWhite} alt="Yangkhil Resort" width={150} class="h-auto w-[140px]" />
+    <button id="menu-close" aria-label="Close menu"><Icon name="x" size={28} /></button>
+  </div>
+  <nav class="mt-10 flex flex-col" aria-label="Mobile">
+    {
+      site.nav.map((l) => (
+        <a href={l.href} class="border-b border-white/10 py-4 font-heading text-[22px] transition-colors hover:text-primary">
+          {l.label}
+        </a>
+      ))
+    }
+  </nav>
+  <a href="/booking/" class="btn mt-8">Book Now</a>
+  <div class="mt-auto space-y-3 pt-8 text-[15px] text-white/80">
+    <a href={`tel:${site.phones[1].replace(/[^+\d]/g, '')}`} class="flex items-center gap-3"><Icon name="phone" size={16} class="text-primary" />{site.phones[0]}</a>
+    <a href={`mailto:${site.email}`} class="flex items-center gap-3 break-all"><Icon name="mail" size={16} class="text-primary" />{site.email}</a>
+    <div class="flex gap-5 pt-3">
+      {socials.map((s) => <a href={s.href} target="_blank" rel="noopener" aria-label={s.label}><Icon name={s.name} size={20} /></a>)}
+    </div>
+  </div>
+</aside>

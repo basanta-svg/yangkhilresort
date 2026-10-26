@@ -1,0 +1,14 @@
+---
+import ImageTile from './ImageTile.astro';
+import SectionHeading from './SectionHeading.astro';
+import { amenities } from '../data/amenities';
+---
+
+<section>
+  <div class="container-x pt-[72px] md:pt-[110px]">
+    <SectionHeading title="Resort Amenities" intro="From the dining room to the hot stone bath, everything you need to unwind in Trongsa." />
+  </div>
+  <div class="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+    {amenities.map((a) => <ImageTile href={`/amenities/#${a.slug}`} photo={a.photo} title={a.title} text={a.short} ratio="aspect-[4/3]" />)}
+  </div>
+</section>

@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import ImageTile from './ImageTile.astro';
+import { photos, alt } from '../data/photos';
+
+const cards = [
+  { title: 'Stay', text: '21 rooms across five two-storey cottages, each with a balcony and valley views.', photo: 'cottage-outdoor', href: '/rooms/' },
+  { title: 'Dine', text: 'Bhutanese and Indian dishes, fresh espresso, pastries and handcrafted cocktails.', photo: 'outdoor', href: '/amenities/#restaurant' },
+  { title: 'Unwind', text: 'A traditional hot stone bath and spa treatments after a day on the road.', photo: 'img-4244', href: '/amenities/#hot-stone-bath' },
+];
+---
+
+<section id="about">
+  <!-- Full-bleed intro: huge photo with the welcome text laid over it -->
+  <div class="relative flex min-h-[640px] items-center overflow-hidden bg-dark lg:min-h-[85svh]">
+    <Image src={photos['cottages']} alt={alt['cottages']} width={2000} class="absolute inset-0 h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-black/10"></div>
+    <div class="container-x relative py-20">
+      <div class="reveal max-w-[560px] text-white">
+        <p class="mb-5 text-[12px] font-medium uppercase tracking-[3px] text-primary">Since 2004</p>
+        <h2 class="h-section !text-white">Welcome to Yangkhil</h2>
+        <div class="mt-6 h-px w-16 bg-primary"></div>
+        <p class="mt-6 text-[18px] font-light leading-relaxed text-white/90">
+          Since 2004, Yangkhil Resort has welcomed guests with authentic Bhutanese hospitality and contemporary comfort.
+          Set against panoramic views of Trongsa Dzong, Taa Dzong and the Mangde Chhu valley, Yangkhil offers a peaceful
+          retreat in the heart of Bhutan.
+        </p>
+        <a href="/about/" class="btn mt-9">Learn More</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-1 md:grid-cols-3">
+    {cards.map((c) => <ImageTile {...c} ratio="aspect-[4/5] md:aspect-[3/4]" />)}
+  </div>
+</section>

@@ -1,0 +1,63 @@
+---
+import { Image } from 'astro:assets';
+import BookingBar from './BookingBar.astro';
+import { photos, alt } from '../data/photos';
+import { site } from '../data/site';
+
+const slides = ['hero-1', 'hero-2', 'hero-3', 'hero-4', 'hero-5', 'hero-6'];
+---
+
+<section class="relative flex flex-col overflow-hidden bg-dark lg:min-h-[calc(100svh-var(--header-h))]" aria-label="Welcome">
+  <div class="absolute inset-0 isolate">
+    <div class="swiper hero-swiper h-full">
+      <div class="swiper-wrapper">
+        {
+          slides.map((s, i) => (
+            <div class="swiper-slide overflow-hidden">
+              <Image
+                src={photos[s]}
+                alt={alt[s]}
+                width={2000}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                class="kenburns h-full w-full object-cover"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+  <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-black/20 to-black/50 lg:from-black/25 lg:via-black/25 lg:to-black/55"></div>
+
+  <!-- Phones: the photo area is nearly a full screen tall and the reservation bar sits below it. -->
+  <div class="relative flex min-h-[calc(92svh-var(--header-h))] flex-1 items-center justify-center px-5 pb-16 pt-8 text-center lg:min-h-0 lg:pb-40">
+    <div class="fade-up mx-auto max-w-[940px]">
+      <h1 class="font-heading text-balance text-[24px] font-light leading-snug !text-white md:text-[32px]">{site.tagline}</h1>
+      <div class="mt-7 flex flex-wrap justify-center gap-3">
+        <a href="/booking/" class="btn !px-5 !py-2.5 !text-[11px]">Book Your Stay</a>
+        <a href="/about/" class="btn-outline !px-5 !py-2.5 !text-[11px]">Explore the Resort</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative z-10 lg:absolute lg:inset-x-0 lg:bottom-5">
+    <BookingBar />
+  </div>
+</section>
+
+<script>
+  import Swiper from 'swiper';
+  import { Autoplay, EffectFade } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/effect-fade';
+
+  new Swiper('.hero-swiper', {
+    modules: [Autoplay, EffectFade],
+    effect: 'fade',
+    fadeEffect: { crossFade: true },
+    loop: true,
+    speed: 1400,
+    autoplay: { delay: 6500, disableOnInteraction: false },
+    allowTouchMove: false,
+  });
+</script>

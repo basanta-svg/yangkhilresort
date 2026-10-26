@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+@import '@fontsource/marcellus/400.css';
+@import '@fontsource/jost/300.css';
+@import '@fontsource/jost/400.css';
+@import '@fontsource/jost/500.css';
+
+/* Design tokens. Gold and navy are sampled from the Yangkhil logo. */
+@theme {
+  --color-primary: #9a8852;
+  --color-primary-dark: #7f6f3f;
+  --color-primary-soft: rgb(154 136 82 / 0.3);
+  --color-navy: #304058;
+  --color-dark: #304058;
+  --color-body: #5f5c57;
+  --color-muted: #7b838e;
+  --color-light: #f6f4ef;
+  --color-hairline: rgb(255 255 255 / 0.35);
+
+  --font-heading: 'Marcellus', Helvetica, Arial, serif;
+  --font-body: 'Jost', sans-serif;
+
+  --shadow-card: 0 10px 40px rgb(48 64 88 / 0.10);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  html,
+  body {
+    overflow-x: clip;
+  }
+  body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-body);
+    background: #fff;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    color: var(--color-dark);
+    font-weight: 400;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1170px] px-5;
+  }
+  .section {
+    @apply py-[72px] md:py-[120px];
+  }
+  .h-hero {
+    @apply text-[40px] leading-[1.1] md:text-[64px] text-white font-light;
+  }
+  .h-section {
+    @apply text-[34px] leading-[1.15] md:text-[52px] font-light;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 border border-primary bg-primary px-5 py-3 text-[12px] font-medium uppercase tracking-[2px] text-white transition-colors duration-300 hover:bg-primary-dark hover:border-primary-dark;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 border border-hairline bg-transparent px-5 py-3 text-[12px] font-medium uppercase tracking-[2px] text-white transition-colors duration-300 hover:bg-primary hover:border-primary;
+  }
+  .btn-outline-dark {
+    @apply inline-flex items-center justify-center gap-2 border border-dark/30 bg-transparent px-5 py-3 text-[12px] font-medium uppercase tracking-[2px] text-dark transition-colors duration-300 hover:bg-primary hover:border-primary hover:text-white;
+  }
+  .img-zoom {
+    @apply overflow-hidden;
+  }
+  .img-zoom img {
+    @apply transition-transform duration-500 ease-out;
+  }
+  .img-zoom:hover img {
+    transform: scale(1.06);
+  }
+  .field {
+    @apply w-full border border-dark/15 bg-white px-4 py-3 text-[16px] text-dark transition-colors duration-300 focus:border-primary focus:outline-none;
+  }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms ease;
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hero */
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+/* One continuous, linear zoom that spans the slide's time on screen plus its fade-out
+   (autoplay 6.5s + fade 1.4s), so the motion never stops or snaps back during the crossfade.
+   The outgoing slide keeps the same animation (class "prev"), so it keeps zooming as it fades. */
+.kenburns {
+  will-change: transform;
+}
+.swiper-slide-active .kenburns,
+.swiper-slide-prev .kenburns {
+  animation: kenburns 8s linear forwards;
+}
+@keyframes fadeup {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fade-up {
+  animation: fadeup 900ms ease both;
+}
+
+/* Swiper theming */
+:root {
+  --swiper-theme-color: var(--color-primary);
+  --swiper-pagination-bullet-inactive-color: #fff;
+  --swiper-pagination-bullet-inactive-opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .swiper-slide-active .kenburns,
+  .swiper-slide-prev .kenburns,
+  .fade-up {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Height of the fixed header. Pages start below it so photos never slide underneath.
+   These are the measured sizes; BaseLayout updates the value if the header ever changes size. */
+:root {
+  --header-h: 51px;
+}
+@media (min-width: 768px) {
+  :root {
+    --header-h: 64px;
+  }
+}

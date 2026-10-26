@@ -1,0 +1,56 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BookCta from '../components/BookCta.astro';
+import SplitFeature from '../components/SplitFeature.astro';
+import { photos, alt } from '../data/photos';
+---
+
+<BaseLayout title="About Us" description="Established in 2004, Yangkhil Resort overlooks Trongsa Dzong, Taa Dzong and the Mangde Chhu river, a short walk from Trongsa town.">
+  <PageHero title="About Yangkhil" subtitle="A little home away from home in central Bhutan." photo="cottages" />
+
+  <SplitFeature photo="cottages" tone="light">
+    <div class="space-y-5 text-[17px]">
+      <h2 class="h-section">Since 2004</h2>
+      <p>
+        Established in 2004, Yangkhil Resort sits on a hillside overlooking the historic Trongsa Dzong, Taa Dzong and the
+        Mangde Chhu river, with views of mountains rising above 10,000 feet. Just a short walk from Trongsa town, the
+        resort offers a peaceful retreat in the heart of central Bhutan.
+      </p>
+      <p>The property comprises five two-storey cottages with 21 rooms, set among landscaped gardens and greenery.</p>
+    </div>
+  </SplitFeature>
+
+  <SplitFeature photo="cottage-outdoor" flip tone="white">
+    <div class="space-y-5 text-[17px]">
+      <h2 class="h-section">Two decades of hospitality</h2>
+      <p>
+        Over the past two decades, Yangkhil has continued to grow and improve its facilities while retaining the warmth of
+        traditional Bhutanese hospitality. Many members of our management team have been with us since the beginning,
+        bringing years of experience and a familiar, personal touch to the way we welcome our guests.
+      </p>
+      <p>
+        From comfortable accommodation and dining to wellness experiences and spaces for private gatherings, Yangkhil
+        offers a place to unwind after a day of exploring Trongsa or travelling through Bhutan.
+      </p>
+    </div>
+  </SplitFeature>
+
+  <section class="relative flex min-h-[70svh] items-center overflow-hidden bg-dark py-20 text-center">
+    <Image src={photos['cottage-night']} alt={alt['cottage-night']} width={2000} class="absolute inset-0 h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-black/65"></div>
+    <div class="container-x reveal relative mx-auto max-w-[860px]">
+      <p class="font-heading text-[26px] leading-snug text-white md:text-[38px]">
+        Whether staying for a night or a little longer, we hope our guests find more than just a place to rest, but a little
+        home away from home, surrounded by the beauty of Bhutan.
+      </p>
+      <div class="mt-9 flex flex-wrap justify-center gap-4">
+        <a href="/rooms/" class="btn">See Our Rooms</a>
+        <a href="/explore-trongsa/" class="btn-outline">Explore Trongsa</a>
+      </div>
+    </div>
+  </section>
+
+  <BookCta photo="cottages" />
+</BaseLayout>

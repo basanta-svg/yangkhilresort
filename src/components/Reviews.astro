@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { photos } from '../data/photos';
+import { reviews } from '../data/reviews';
+import { site } from '../data/site';
+---
+
+<section class="relative overflow-hidden bg-dark min-h-[70svh] py-[72px] md:py-[120px] flex items-center" aria-label="Guest reviews">
+  <Image src={photos['cottage-night']} alt="" width={1800} class="absolute inset-0 h-full w-full object-cover" />
+  <div class="absolute inset-0 bg-black/55"></div>
+
+  <div class="container-x relative">
+    <div class="reveal mx-auto max-w-[820px] bg-white/15 px-6 py-12 text-center text-white backdrop-blur-md md:px-16 md:py-16">
+      <Icon name="quote" size={44} class="mx-auto mb-6 text-primary" />
+      {
+        reviews.length > 0 ? (
+          <div class="swiper reviews-swiper">
+            <div class="swiper-wrapper">
+              {reviews.map((r) => (
+                <div class="swiper-slide">
+                  <blockquote class="font-heading text-[22px] leading-snug md:text-[28px]">“{r.quote}”</blockquote>
+                  <p class="mt-6 text-[14px]">{r.author} · {r.source}</p>
+                </div>
+              ))}
+            </div>
+            <div class="swiper-pagination reviews-dots !static mt-8"></div>
+          </div>
+        ) : (
+          <>
+            <h2 class="font-heading text-[28px] font-light leading-snug !text-white md:text-[40px]">What our guests say</h2>
+            <p class="mx-auto mt-4 max-w-[520px] text-white/80">
+              Read reviews from guests who have stayed with us, and share your own experience of Yangkhil.
+            </p>
+            <div class="mt-8 flex flex-wrap justify-center gap-4">
+              <a href={site.social.tripadvisor} target="_blank" rel="noopener" class="btn">
+                <Icon name="tripadvisor" size={18} /> Tripadvisor reviews
+              </a>
+              {site.social.google && (
+                <a href={site.social.google} target="_blank" rel="noopener" class="btn-outline">
+                  <Icon name="google" size={18} /> Google reviews
+                </a>
+              )}
+            </div>
+          </>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import Swiper from 'swiper';
+  import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/effect-fade';
+  import 'swiper/css/pagination';
+  if (document.querySelector('.reviews-swiper')) {
+    new Swiper('.reviews-swiper', {
+      modules: [Autoplay, EffectFade, Pagination],
+      effect: 'fade',
+      fadeEffect: { crossFade: true },
+      loop: true,
+      autoplay: { delay: 5000 },
+      pagination: { el: '.reviews-dots', clickable: true },
+    });
+  }
+</script>

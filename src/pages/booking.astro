@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { rooms } from '../data/rooms';
+import { site } from '../data/site';
+---
+
+<BaseLayout title="Book Your Stay" description="Send an enquiry to Yangkhil Resort with your dates, number of guests and room type. We reply on WhatsApp.">
+  <PageHero title="Book Your Stay" subtitle="Send us your dates, guests and preferred room. We will confirm availability on WhatsApp." photo="cottages" />
+
+  <section class="section">
+    <div class="container-x grid gap-14 lg:grid-cols-[1.4fr_1fr]">
+      <form id="enquiry" class="reveal grid gap-6 sm:grid-cols-2" novalidate>
+        <div class="sm:col-span-2">
+          <label for="name" class="mb-2 block text-[14px] text-dark">Your name</label>
+          <input id="name" name="name" class="field" autocomplete="name" required />
+        </div>
+        <div>
+          <label for="checkin" class="mb-2 block text-[14px] text-dark">Check in</label>
+          <input id="checkin" name="checkin" type="date" class="field" required />
+        </div>
+        <div>
+          <label for="checkout" class="mb-2 block text-[14px] text-dark">Check out</label>
+          <input id="checkout" name="checkout" type="date" class="field" required />
+        </div>
+        <div>
+          <label for="adults" class="mb-2 block text-[14px] text-dark">Adults</label>
+          <input id="adults" name="adults" type="number" min="1" max="12" value="2" class="field" required />
+        </div>
+        <div>
+          <label for="children" class="mb-2 block text-[14px] text-dark">Children</label>
+          <input id="children" name="children" type="number" min="0" max="8" value="0" class="field" />
+        </div>
+        <div class="sm:col-span-2">
+          <label for="room" class="mb-2 block text-[14px] text-dark">Room type</label>
+          <select id="room" name="room" class="field" required>
+            <option value="">Choose a room…</option>
+            {rooms.map((r) => <option value={r.slug}>{r.name} ({r.guests.toLowerCase()})</option>)}
+            <option value="any">No preference</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="notes" class="mb-2 block text-[14px] text-dark">Anything else we should know? (optional)</label>
+          <textarea id="notes" name="notes" rows="3" class="field"></textarea>
+        </div>
+        <p id="form-error" class="hidden text-[15px] text-[#a0432a] sm:col-span-2" role="alert"></p>
+        <div class="flex flex-wrap gap-4 sm:col-span-2">
+          <button type="submit" class="btn"><Icon name="whatsapp" size={16} /> Send on WhatsApp</button>
+          <button type="button" id="send-email" class="btn-outline-dark"><Icon name="mail" size={16} /> Send by email</button>
+        </div>
+        <p class="text-[14px] text-muted sm:col-span-2">
+          This opens WhatsApp or your email app with your enquiry written out. Nothing is sent until you press send there.
+        </p>
+      </form>
+
+      <aside class="reveal h-fit bg-light p-8">
+        <h2 class="text-[26px]">Prefer to call?</h2>
+        <ul class="mt-5 space-y-4">
+          <li class="flex gap-3"><Icon name="phone" size={18} class="mt-1 shrink-0 text-primary" /><span>{site.phones[0]}<br />{site.phones[1]}</span></li>
+          <li class="flex gap-3"><Icon name="mail" size={18} class="mt-1 shrink-0 text-primary" /><a href={`mailto:${site.email}`} class="break-all hover:text-primary">{site.email}</a></li>
+          <li class="flex gap-3"><Icon name="map-pin" size={18} class="mt-1 shrink-0 text-primary" /><span>Trongsa, Bhutan, a short walk from Trongsa town</span></li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <script define:vars={{ wa: site.whatsapp, email: site.email, resort: site.name, rooms: Object.fromEntries(rooms.map((r) => [r.slug, r.name])) }}>
+    const form = document.getElementById('enquiry');
+    const err = document.getElementById('form-error');
+    const ci = form.checkin;
+    const co = form.checkout;
+    const iso = (d) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    ci.min = co.min = iso(new Date());
+
+    // Prefill from the homepage booking bar or a room's "Enquire" button
+    const q = new URLSearchParams(location.search);
+    ['checkin', 'checkout', 'adults', 'children'].forEach((k) => q.get(k) && (form[k].value = q.get(k)));
+    if (q.get('room') && form.room.querySelector(`option[value="${q.get('room')}"]`)) form.room.value = q.get('room');
+
+    const nice = (s) => new Date(s + 'T00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    function message() {
+      err.classList.add('hidden');
+      const fail = (m) => ((err.textContent = m), err.classList.remove('hidden'), null);
+      if (!form.name.value.trim()) return fail('Please enter your name.');
+      if (!ci.value || !co.value) return fail('Please choose your check-in and check-out dates.');
+      if (co.value <= ci.value) return fail('Check-out must be after check-in.');
+      if (!form.room.value) return fail('Please choose a room type.');
+      const room = form.room.value === 'any' ? 'No preference' : rooms[form.room.value];
+      const kids = Number(form.children.value || 0);
+      return [
+        `Hello ${resort}, I would like to enquire about a stay.`,
+        `Name: ${form.name.value.trim()}`,
+        `Check in: ${nice(ci.value)}`,
+        `Check out: ${nice(co.value)}`,
+        `Guests: ${form.adults.value} adult(s)${kids ? `, ${kids} child(ren)` : ''}`,
+        `Room type: ${room}`,
+        form.notes.value.trim() && `Notes: ${form.notes.value.trim()}`,
+      ].filter(Boolean).join('\n');
+    }
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const m = message();
+      if (m) window.open(`https://wa.me/${wa}?text=${encodeURIComponent(m)}`, '_blank', 'noopener');
+    });
+    document.getElementById('send-email').addEventListener('click', () => {
+      const m = message();
+      if (m) location.href = `mailto:${email}?subject=${encodeURIComponent('Stay enquiry')}&body=${encodeURIComponent(m)}`;
+    });
+  </script>
+</BaseLayout>

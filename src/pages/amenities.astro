@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import BookCta from '../components/BookCta.astro';
+import SplitFeature from '../components/SplitFeature.astro';
+import Icon from '../components/Icon.astro';
+import { amenities } from '../data/amenities';
+---
+
+<BaseLayout title="Amenities & Experiences" description="Restaurant, traditional hot stone bath, spa and massage, conference and banquet halls, Thori Lounge and Ngal So Coffee Lounge at Yangkhil Resort.">
+  <PageHero title="Amenities & Experiences" subtitle="Dining, wellness and spaces to gather, with the Trongsa valley outside." photo="traditional-hot-stone-bath" />
+
+  {
+    amenities.map((a, i) => (
+      <SplitFeature id={a.slug} photo={a.photo} flip={i % 2 === 1} tone={i % 2 === 0 ? 'light' : 'white'}>
+        <span class="mb-5 flex h-[55px] w-[50px] items-center justify-center rounded-t-full bg-primary text-white">
+          <Icon name={a.icon} size={24} />
+        </span>
+        <h2 class="text-[34px] md:text-[44px]">{a.title}</h2>
+        <p class="mt-4 text-[17px]">{a.text}</p>
+      </SplitFeature>
+    ))
+  }
+
+  <BookCta photo="thori-cocktail-lounge" />
+</BaseLayout>

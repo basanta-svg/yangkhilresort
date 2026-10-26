@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import BookCta from '../../components/BookCta.astro';
+import ImageTile from '../../components/ImageTile.astro';
+import { attractions } from '../../data/trongsa';
+
+export function getStaticPaths() {
+  return attractions.map((a) => ({ params: { slug: a.slug }, props: { a } }));
+}
+const { a } = Astro.props;
+const others = attractions.filter((o) => o.slug !== a.slug);
+---
+
+<BaseLayout title={a.title} description={a.summary} ogPhoto={a.photo}>
+  <PageHero title={a.title} subtitle={a.summary} photo={a.photo} />
+
+  <section class="section">
+    <article class="container-x mx-auto max-w-[780px] space-y-6 text-[18px]">
+      {a.body.map((p) => <p>{p}</p>)}
+      <a href="/explore-trongsa/" class="btn-outline-dark">← All of Trongsa</a>
+    </article>
+  </section>
+
+  <section class="grid gap-1 md:grid-cols-3">
+    {others.map((o) => <ImageTile href={`/explore-trongsa/${o.slug}/`} photo={o.photo} title={o.title} ratio="aspect-[4/3]" cta="Read more" />)}
+  </section>
+
+  <BookCta />
+</BaseLayout>

@@ -1,0 +1,18 @@
+---
+import { Image } from 'astro:assets';
+import { photos } from '../data/photos';
+interface Props {
+  photo?: string;
+}
+const { photo = 'img-4201' } = Astro.props;
+---
+
+<section class="relative flex min-h-[70svh] items-center overflow-hidden bg-dark py-[72px] text-center md:py-[110px]">
+  <Image src={photos[photo]} alt="" width={1800} class="absolute inset-0 h-full w-full object-cover" />
+  <div class="absolute inset-0 bg-black/70"></div>
+  <div class="container-x reveal relative">
+    <h2 class="h-section !text-white">Your stay in Trongsa awaits</h2>
+    <p class="mx-auto mt-4 max-w-[560px] text-white/80">Tell us your dates and we will confirm availability, usually over WhatsApp.</p>
+    <a href="/booking/" class="btn mt-8">Book Now</a>
+  </div>
+</section>

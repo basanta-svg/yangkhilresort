@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import { photos, alt } from '../data/photos';
+
+const stats = [
+  { n: '2004', l: 'Welcoming guests since' },
+  { n: '21', l: 'Rooms' },
+  { n: '5', l: 'Two-storey cottages' },
+  { n: '10,000 ft', l: 'Mountains in view' },
+];
+---
+
+<section class="relative flex min-h-[460px] items-center overflow-hidden bg-dark md:min-h-[70svh]">
+  <Image src={photos['cottage-outdoor']} alt={alt['cottage-outdoor']} width={2000} class="absolute inset-0 h-full w-full object-cover" />
+  <div class="absolute inset-0 bg-black/55"></div>
+  <div class="container-x reveal relative grid grid-cols-2 gap-y-12 py-20 text-center text-white md:grid-cols-4">
+    {
+      stats.map((s) => (
+        <div>
+          <p class="font-heading text-[40px] leading-none md:text-[64px]">{s.n}</p>
+          <p class="mt-4 text-[13px] uppercase tracking-[2px] text-white/85">{s.l}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

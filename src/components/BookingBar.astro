@@ -1,0 +1,107 @@
+---
+// Glass booking bar. Submits to /booking/ (GET) with the values prefilled.
+---
+
+<form
+  id="booking-bar"
+  action="/booking/"
+  method="get"
+  class="w-full bg-dark px-5 py-6 text-white lg:bg-white/15 lg:py-0 lg:backdrop-blur-md"
+  aria-label="Check availability"
+>
+  <div class="mx-auto grid max-w-[1370px] grid-cols-2 items-center gap-x-6 gap-y-5 lg:h-[88px] lg:grid-cols-[auto_1fr_1fr_auto_auto_auto] lg:gap-0 lg:px-12">
+    <p class="col-span-2 font-heading text-[20px] font-medium lg:col-span-1 lg:pr-10">Reservation</p>
+
+    <label class="block lg:border-l lg:border-white/25 lg:pl-8">
+      <span class="block text-[12px] text-white/80">Check In</span>
+      <input type="date" name="checkin" id="bar-checkin" required class="date-input w-full max-w-[170px] bg-transparent text-[15px] outline-none" />
+    </label>
+    <label class="block lg:border-l lg:border-white/25 lg:pl-8">
+      <span class="block text-[12px] text-white/80">Check Out</span>
+      <input type="date" name="checkout" id="bar-checkout" required class="date-input w-full max-w-[170px] bg-transparent text-[15px] outline-none" />
+    </label>
+
+    <div class="lg:border-l lg:border-white/25 lg:px-8">
+      <span class="block text-[12px] text-white/80" id="adults-label">Adults</span>
+      <div class="mt-0.5 flex items-center gap-2.5" role="group" aria-labelledby="adults-label">
+        <button type="button" data-counter="adults" data-step="-1" aria-label="Fewer adults" class="counter-btn">−</button>
+        <output id="adults-out" class="min-w-5 text-center text-[15px]">2</output>
+        <button type="button" data-counter="adults" data-step="1" aria-label="More adults" class="counter-btn">+</button>
+      </div>
+      <input type="hidden" name="adults" id="adults" value="2" />
+    </div>
+    <div class="lg:border-l lg:border-white/25 lg:px-8">
+      <span class="block text-[12px] text-white/80" id="children-label">Children</span>
+      <div class="mt-0.5 flex items-center gap-2.5" role="group" aria-labelledby="children-label">
+        <button type="button" data-counter="children" data-step="-1" aria-label="Fewer children" class="counter-btn">−</button>
+        <output id="children-out" class="min-w-5 text-center text-[15px]">0</output>
+        <button type="button" data-counter="children" data-step="1" aria-label="More children" class="counter-btn">+</button>
+      </div>
+      <input type="hidden" name="children" id="children" value="0" />
+    </div>
+
+    <button type="submit" class="btn col-span-2 !px-4 !py-2.5 !text-[11px] lg:col-span-1 lg:ml-2">Check Availability</button>
+    <p id="bar-error" class="col-span-2 hidden text-[14px] text-[#f2c08a] lg:col-span-6" role="alert"></p>
+  </div>
+</form>
+
+<style is:global>
+  .counter-btn {
+    display: inline-flex;
+    height: 26px;
+    width: 26px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1;
+    transition: background-color 300ms;
+  }
+  .counter-btn:hover {
+    background: var(--color-primary-dark);
+  }
+  .date-input {
+    color-scheme: dark;
+    font-family: var(--font-body);
+  }
+</style>
+
+<script>
+  const form = document.getElementById('booking-bar') as HTMLFormElement;
+  const ci = document.getElementById('bar-checkin') as HTMLInputElement;
+  const co = document.getElementById('bar-checkout') as HTMLInputElement;
+  const err = document.getElementById('bar-error')!;
+  const iso = (d: Date) => new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const today = iso(new Date());
+  ci.min = today;
+  co.min = today;
+  ci.addEventListener('change', () => {
+    const next = new Date(ci.value);
+    next.setDate(next.getDate() + 1);
+    co.min = iso(next);
+    if (co.value && co.value <= ci.value) co.value = '';
+  });
+
+  const limits: Record<string, [number, number]> = { adults: [1, 12], children: [0, 8] };
+  form.querySelectorAll<HTMLButtonElement>('[data-counter]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.counter!;
+      const input = document.getElementById(key) as HTMLInputElement;
+      const [min, max] = limits[key];
+      const v = Math.min(max, Math.max(min, Number(input.value) + Number(btn.dataset.step)));
+      input.value = String(v);
+      document.getElementById(`${key}-out`)!.textContent = String(v);
+    }),
+  );
+
+  form.addEventListener('submit', (e) => {
+    err.classList.add('hidden');
+    if (ci.value && co.value && co.value <= ci.value) {
+      e.preventDefault();
+      err.textContent = 'Check-out must be after check-in.';
+      err.classList.remove('hidden');
+    }
+  });
+</script>

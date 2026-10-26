@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-white.png';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+const socials = [
+  { name: 'instagram', href: site.social.instagram, label: 'Instagram' },
+  { name: 'facebook', href: site.social.facebook, label: 'Facebook' },
+  { name: 'tripadvisor', href: site.social.tripadvisor, label: 'Tripadvisor' },
+].filter((s) => s.href);
+---
+
+<footer class="bg-dark text-white/80">
+  <div class="container-x grid gap-12 py-16 text-center md:grid-cols-3 md:py-20">
+    <div>
+      <h4 class="mb-4 text-[22px] !text-white">Address</h4>
+      <p>{site.name}<br />Trongsa, Bhutan<br />A short walk from Trongsa town</p>
+    </div>
+    <div class="flex flex-col items-center">
+      <a href="/" aria-label="Yangkhil Resort, home">
+        <Image src={logo} alt="Yangkhil Resort" width={220} class="h-auto w-[200px]" />
+      </a>
+      <div class="mt-6 flex gap-5">
+        {
+          socials.map((s) => (
+            <a href={s.href} target="_blank" rel="noopener" aria-label={s.label} class="transition-colors hover:text-primary">
+              <Icon name={s.name} size={20} />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+    <div>
+      <h4 class="mb-4 text-[22px] !text-white">Contact Us</h4>
+      <p>
+        T. <a href="tel:+9753521417" class="hover:text-primary">{site.phones[0]}</a><br />
+        M. <a href={`tel:${site.phones[1].replace(/[^+\d]/g, '')}`} class="hover:text-primary">{site.phones[1]}</a><br />
+        E. <a href={`mailto:${site.email}`} class="break-all hover:text-primary">{site.email}</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-x flex flex-wrap justify-center gap-x-8 gap-y-2 py-6 text-[14px]">
+      {
+        site.quickLinks.map((l) => (
+          <a href={l.href} target="_blank" rel="noopener" class="transition-colors hover:text-primary">{l.label}</a>
+        ))
+      }
+    </div>
+  </div>
+  <div class="border-t border-white/10 py-6 text-center text-[14px]">
+    <div class="container-x">
+      <p>© {new Date().getFullYear()} {site.name}, Trongsa, Bhutan. All rights reserved.</p>
+      <p class="mt-1 text-[13px] text-white/60">Website designed and developed by aBIt Private Limited</p>
+    </div>
+  </div>
+</footer>
